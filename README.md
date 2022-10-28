@@ -1,4 +1,3 @@
 # Parallelism
- 
+
 teste
-testando
