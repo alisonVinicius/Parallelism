@@ -1,41 +1,12 @@
-/**
- * Aqui, neste programa, é executado um
- * algoritmo que força uma sincronização
- * da GPU. Esta sincronização irá manter
- * a impressão de cada thread ordenada
- * onde a cada rodada um número de thread
- * aumenta e diminui.
- * Exemplo:
- * t0
- * t0 t1
- * t0 t1 t2
- * t1 t2
- * t2
-*/
-
-
-/**
- * Biblioteca comum para C++
-*/
 #include<iostream>
-
-
-/**
- * Bibliotecas para capturas de 
- * erro e execução de algumas
- * ferramentas cuda.
-*/
-#include <cuda_runtime.h>
-#include <cuda_profiler_api.h>
 
 
 
 using namespace std;
 
-/**
- * Este kernel executa a impressão
- * sincronizada das threads. */
-__global__ void kernel(int n){
+__global__ void kernel(int *d_v, int n){
+
+
 
     /**
      * Declara variável compartilhada entre as threads.
@@ -53,7 +24,7 @@ __global__ void kernel(int n){
     */
     int j = 0;
 
-    /**
+     /**
      * Para manter a sincronização, foi escolhida
      * a thread zero. Pode ser qualquer thread.
     */
@@ -101,7 +72,25 @@ __global__ void kernel(int n){
             /**
              * Faz uma impressão de j
             */
-            printf("%d ", j);
+            printf("%d ", d_v[i*n + j]);
+
+
+
+
+            // t = (s[i] != r[j] ? 1 : 0);
+			// a = d[i][j-1] + 1;
+			// b = d[i-1][j] + 1;
+			// c = d[i-1][j-1] + t;
+			// // Calcula d[i][j] = min(a, b, c)
+			// if (a < b)
+			// 	min = a;
+			// else
+			// 	min = b;
+			// if (c < min)
+			// 	min = c;
+			// d[i][j] = min;
+
+
 
             /**
              * Incrementa j
@@ -131,34 +120,55 @@ __global__ void kernel(int n){
 
   
 
+    
+
 
 
 
 }
 
 
-int main(int argc, char *argv[]){
 
-    /**
-     * O número de blocos para este
-     * algoritmo deve ser fixo em 1.
-    */
-    int numB = 1;
 
-    /**
-     * O número de threads é no máximo 1024.
-    */
-    int numT = 5;
+int main(int argc, char **argv){
 
-    /**
-     * Realiza a chamada de kernel.
-    */
-    kernel<<<numB,numT>>>(numT);
+    int  *v = (int*)malloc(5 * 5 * sizeof(int));
+
+    int *d_v;
+
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < 5; j++){
+            v[i*5 + j] = i + j;
+        }
+    }
+
+
+    cudaMalloc((void**)&d_v, 5 * 5 * sizeof(int));
+
+
+    cudaMemcpy(d_v, v, 5 * 5 * sizeof(int), cudaMemcpyHostToDevice);
+
+
+    int n = 5;
+
+    kernel<<<1,5>>>(d_v, n);
     cudaDeviceSynchronize();
 
 
+    a = 5;
+    b = 6;
+    c = soma(a, b);
 
 
+    a 
+
+    
+    soma(int a, int b){
+
+        a = 12;
+
+        return a + b;
+    }
 
     return 0;
 }
