@@ -76,22 +76,6 @@ __global__ void kernel(int *d_v, int n){
 
 
 
-
-            // t = (s[i] != r[j] ? 1 : 0);
-			// a = d[i][j-1] + 1;
-			// b = d[i-1][j] + 1;
-			// c = d[i-1][j-1] + t;
-			// // Calcula d[i][j] = min(a, b, c)
-			// if (a < b)
-			// 	min = a;
-			// else
-			// 	min = b;
-			// if (c < min)
-			// 	min = c;
-			// d[i][j] = min;
-
-
-
             /**
              * Incrementa j
             */
@@ -155,20 +139,6 @@ int main(int argc, char **argv){
     cudaDeviceSynchronize();
 
 
-    a = 5;
-    b = 6;
-    c = soma(a, b);
-
-
-    a 
-
-    
-    soma(int a, int b){
-
-        a = 12;
-
-        return a + b;
-    }
-
+   
     return 0;
 }
